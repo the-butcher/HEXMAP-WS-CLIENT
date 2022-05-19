@@ -11,7 +11,7 @@ export interface IUserInterfaceProps {
     /**
      * properties for the indicator area
      */
-    indicatorProps: IIndicatorProps[];
+    indicatorProps: IIndicatorProps;
 
 
 }

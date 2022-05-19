@@ -16,8 +16,5 @@ export class ObjectUtil {
         return Math.round(Math.random() * 100000000).toString(16).substring(0, 5);
     }
 
-    static buildIndicatorTitle(props: IIndicatorProps): string {
-        return `${props.name} nach ${props.desc}`;
-    }
 
 }

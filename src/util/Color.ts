@@ -3,8 +3,6 @@ import { IColor } from "./IColor";
 
 export class Color implements IColor {
 
-    static readonly DARK_GREY = new Color(0.17, 0.1, 0.01);
-
     static readonly INDEX_H: number = 0;
     static readonly INDEX_S: number = 1;
     static readonly INDEX_V: number = 2;

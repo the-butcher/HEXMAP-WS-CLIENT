@@ -12,11 +12,6 @@ export class HexagonRepository {
     static readonly VALUE_TYPE____L = 1;
     static readonly VALUE_TYPE____G = 2;
 
-
-    // static readonly VALUE_INDEX___Z = 2;
-    // static readonly VALUE_INDEX_GKZ = 3;
-    // static readonly VALUE_INDEX_LUC = 4;
-
     static getInstance(): HexagonRepository {
         if (!this.instance) {
             this.instance = new HexagonRepository();
@@ -81,14 +76,12 @@ export class HexagonRepository {
 
         let hexagon: IHexagon;
 
-        // console.log('hexagons loaded ...');
-
         let values: number[];
         let valueXY: number;
         let valueX: number;
         let valueY: number;
-        let valueZ = 0;
-        let valueL = 0;
+        let valueZ = - SpatialUtil.HEXAGON_OFFSET_Y - 0.05;
+        let valueL = 999; // NODATA
         let valueG = '#####';
         let yOffset: number;
         let counter = 0;
@@ -108,7 +101,7 @@ export class HexagonRepository {
             if (valueTypes) {
                 for (let valueIndex = 0; valueIndex < valueTypes.length; valueIndex++) {
                     if (valueTypes[valueIndex] === HexagonRepository.VALUE_TYPE____Z) {
-                        valueZ = values[valueIndex + 1];
+                        valueZ = SpatialUtil.toZ(values[valueIndex + 1] / SpatialUtil.SCALE_PRECISION) - SpatialUtil.HEXAGON_OFFSET_Y - 4
                     } else if (valueTypes[valueIndex] === HexagonRepository.VALUE_TYPE____L) {
                         valueL = values[valueIndex + 1];
                     } else if (valueTypes[valueIndex] === HexagonRepository.VALUE_TYPE____G) {
@@ -118,7 +111,6 @@ export class HexagonRepository {
             }
 
             yOffset = valueX % 2 === 0 ? 0 : SpatialUtil.HEXAGON_SPACING_X / 2;
-            // yOffset += values[HexagonRepository.VALUE_INDEX_LUC] == 1 ? SpatialUtil.HEXAGON_SPACING_X * 17 : 0;
 
             /**
              * intial values
@@ -137,7 +129,7 @@ export class HexagonRepository {
                 row: valueY,
                 gkz: valueG, // values[HexagonRepository.VALUE_INDEX_GKZ] >= 0 ? values[HexagonRepository.VALUE_INDEX_GKZ].toString() : undefined,
                 luc: valueL, // values[HexagonRepository.VALUE_INDEX_LUC],
-                ele: SpatialUtil.toZ(valueZ / SpatialUtil.SCALE_PRECISION) - SpatialUtil.HEXAGON_OFFSET_Y - 4
+                ele: valueZ
             };
             hexagonArray.push(hexagon);
             hexagon.y = hexagon.ele; // props.renderer.getHeight(hexagonValue);

@@ -17,7 +17,7 @@ import { IHexagonState } from './IHexagonState';
 export default (props: IHexagonsProps) => {
 
   const { invalidate, gl, scene, camera } = useThree();
-  const { stamp, onHexagonsLoaded } = props;
+  const { stamp, onHexagonsLoaded, onHexagonClicked } = props;
 
   const hexagonCount = 167934;
 
@@ -143,8 +143,18 @@ export default (props: IHexagonsProps) => {
 
   }, [stamp]);
 
+  let handleClick = (e: ThreeEvent<PointerEvent>) => { //
+
+    e.stopPropagation();
+    if (e.instanceId && e.delta < 5) {
+      const hexagonValue = HexagonRepository.getInstance().getHexagon(e.instanceId);
+      onHexagonClicked(hexagonValue);
+    }
+
+  }
+
   return (
-    <instancedMesh ref={meshRef} args={[null as unknown as BufferGeometry, null as unknown as Material, hexagonCount]} castShadow receiveShadow>
+    <instancedMesh ref={meshRef} args={[null as unknown as BufferGeometry, null as unknown as Material, hexagonCount]} castShadow receiveShadow onClick={handleClick}>
       <bufferGeometry ref={geomRef}>
         <instancedBufferAttribute attachObject={['attributes', 'color']} args={[colorCurr, 3]}></instancedBufferAttribute>
       </bufferGeometry>

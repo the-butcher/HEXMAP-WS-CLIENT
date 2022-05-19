@@ -1,20 +1,35 @@
 import { library } from '@fortawesome/fontawesome-svg-core'; //allows later to just use icon name to render-them
 import { faCheckSquare, faCoffee, fas } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
+import { IHexagon } from './components/IHexagon';
 import { IHexagonsProps } from './components/IHexagonsProps';
 import { IIndicatorProps } from './components/IIndicatorProps';
 import { IMapProps } from './components/IMapProps';
 import { IUserInterfaceProps } from './components/IUserInterfaceProps';
 import MapComponent from './components/MapComponent';
 import UserInterfaceComponent from './components/UserInterfaceComponent';
-import { DataRepository } from './data/DataRepository';
 import { IAppState } from './IAppState';
-import { Color } from './util/Color';
 import { ObjectUtil } from './util/ObjectUtil';
 
 library.add(fas, faCheckSquare, faCoffee)
 
 export default () => {
+
+  const handleHexagonClicked = (hexagon: IHexagon) => {
+
+    console.debug('📞 handling hexagon clicked', hexagon);
+
+    setAppState({
+      ...appState,
+      action: {
+        hexagon,
+        stamp: ObjectUtil.createId(),
+        updateScene: false,
+        updateLight: false
+      }
+    });
+
+  }
 
   const handleHexagonsLoaded = () => {
 
@@ -78,25 +93,18 @@ export default () => {
     hexagonProps: {
       name: '',
       stamp: ObjectUtil.createId(),
-      onHexagonsLoaded: handleHexagonsLoaded
+      onHexagonsLoaded: handleHexagonsLoaded,
+      onHexagonClicked: handleHexagonClicked
     }
   });
 
-  const indicatorProps: IIndicatorProps[] = [
+  const indicatorProps: IIndicatorProps = {
+    id: 'i_ems',
+    filePickerProps: {
+      onHexagonUpdate: handleHexagonsUpdated
+    }
+  };
 
-    {
-      id: 'i_ems',
-      label00: 'test01',
-      name: 'test01',
-      desc: 'test01 desc',
-      onExpand: () => { },
-      fold: 'open-horizontal',
-      filePickerProps: {
-        onHexagonUpdate: handleHexagonsUpdated
-      }
-    },
-
-  ];
   const [userInterfaceProps, setUserInterfaceProps] = useState<IUserInterfaceProps>({
     indicatorProps,
   });
@@ -156,6 +164,15 @@ export default () => {
         stamp: appState.action.updateLight ? ObjectUtil.createId() : props.stamp,
         shadowEnabled: true
       }
+    });
+
+    const _indicatorProps: IIndicatorProps = {
+      ...userInterfaceProps.indicatorProps,
+      hexagon: appState.action.hexagon
+    }
+    setUserInterfaceProps({
+      ...userInterfaceProps,
+      indicatorProps: _indicatorProps
     });
 
 

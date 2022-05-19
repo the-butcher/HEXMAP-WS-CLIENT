@@ -1,66 +1,32 @@
-import { ExpandMore } from '@mui/icons-material';
-import { Button, Card, CardContent, IconButton, useTheme } from '@mui/material';
-import { ObjectUtil } from '../util/ObjectUtil';
+import { Card, CardContent, useTheme } from '@mui/material';
+import { ReactElement } from 'react';
+import { ColorUtil } from '../util/ColorUtil';
 import FilePickerComponent from '../util/FilePickerComponent';
+import { SpatialUtil } from '../util/SpatialUtil';
 import { IIndicatorProps } from './IIndicatorProps';
 
-export default (props: IIndicatorProps & React.CSSProperties) => {
+export default (props: IIndicatorProps) => {
 
   const theme = useTheme();
 
-  const { id, onExpand, filePickerProps } = props;
+  const { filePickerProps } = props;
 
-  const openHorizontal = props.fold === 'open-horizontal' || props.fold === 'open-vertical';
-  const openVertical = props.fold === 'open-vertical';
-  let expandTransform = 'rotate(-90deg)'
-  if (openHorizontal) {
-    expandTransform = openVertical ? 'rotate(180deg)' : 'rotate(0deg)';
+  let hexagonInfo: ReactElement = <div></div>;
+  // https://www.gemeinden.at/gemeinden/20636
+  if (props.hexagon) {
+    const ele = (props.hexagon.y + 4 + SpatialUtil.HEXAGON_OFFSET_Y) / SpatialUtil.SCALE_SCENE / 2;
+    const luc = ColorUtil.LABELS[props.hexagon.luc];
+    const hrf = props.hexagon.gkz === '#####' ? '' : `https://www.gemeinden.at/gemeinden/${props.hexagon.gkz}`;
+    const gzk = props.hexagon.gkz === '#####' ? <span>NODATA</span> : <a href={hrf} target="_blank" style={{ color: 'var(--color-text)' }}> {props.hexagon.gkz}</a >; //
+    hexagonInfo = <div style={{ fontSize: '1.2em', padding: '20px' }}>GKZ: {gzk}, LUC: {luc}, ELE: {ele.toFixed(2)}</div>;
   }
-
-  const handleExpand = (e: React.PointerEvent) => {
-    onExpand(id);
-  }
-
-
-
-  const indicatorMinHeight = '90px';
-  const verticalHeight = openVertical ? `${Math.min(window.innerHeight - 500, 500)}px` : indicatorMinHeight
 
   return (
     <div style={{ ...props.style, transition: 'all 500ms ease-in-out', userSelect: 'none' }}>
       <Card elevation={4}>
-        <CardContent style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', transition: 'all 500ms ease-in-out', pointerEvents: 'visible' }} >
-          <div style={{ display: 'flex', justifyContent: 'right', flexDirection: 'row', minHeight: '21px' }}>
-            <div style={{ fontSize: '14px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', paddingTop: '1px', paddingRight: '12px' }}>{ObjectUtil.buildIndicatorTitle(props)}</div>
-            <div style={{ flexGrow: '1' }}></div>
-            <div style={{ overflow: 'hidden', position: 'relative' }}>
-
-            </div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', minHeight: indicatorMinHeight }}>
-            <div style={{ display: 'flex', flexDirection: 'column', minWidth: '140px', flexGrow: '1' }}>
-              <div style={{ fontSize: '36px', textAlign: 'right', whiteSpace: 'nowrap', lineHeight: '50%', paddingTop: '20px' }}>{props.label00}</div>
-              <div style={{ fontSize: '10px', textAlign: 'right' }}>##date##</div>
-              <div style={{ fontSize: '18px', textAlign: 'right', whiteSpace: 'nowrap', lineHeight: '50%', paddingTop: '12px' }}>##label07##</div>
-              <div style={{ fontSize: '10px', textAlign: 'right', whiteSpace: 'nowrap' }}>gegenüber Vorwoche</div>
-              <div style={{ minHeight: '3px', flexGrow: '100' }} />
-
-              <div style={{ display: 'flex', flexDirection: 'column', height: openVertical ? '260px' : '0px', transition: 'all 500ms ease-in-out' }}>
-                <div style={{ flexGrow: '10' }} />
-                ##legend##
-                <div style={{ minHeight: '30px' }} />
-              </div>
-
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', padding: '0px', minWidth: '40px', width: '40px' }}>
-              <IconButton key={`expand_${props.id}`} aria-label='share' onPointerUp={handleExpand} style={{ transform: expandTransform }}>
-                <ExpandMore style={{ width: '24px', height: '24px', color: 'var(--color-text)' }} />
-              </IconButton>
-              <div style={{ flexGrow: '1' }}></div>
-            </div>
-            <FilePickerComponent {...filePickerProps} />
-
-          </div>
+        <CardContent style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden', transition: 'all 500ms ease-in-out', pointerEvents: 'visible' }} >
+          <FilePickerComponent {...filePickerProps} />
+          {hexagonInfo}
         </CardContent>
       </Card>
     </div>

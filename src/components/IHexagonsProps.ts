@@ -15,10 +15,8 @@ export interface IHexagonsProps {
 
     stamp: string;
 
-    // view: ViewOrientation;
+    onHexagonClicked: (hexagon: IHexagon) => void;
 
     onHexagonsLoaded: () => void;
-
-    // getState: (hexagon: IHexagon) => IHexagonState;
 
 }

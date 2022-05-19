@@ -1,5 +1,6 @@
 import { IFile } from "@amcharts/amcharts5/.internal/plugins/exporting/Exporting";
 import { IFilePickerProps } from "./IFilePickerProps";
+import { IHexagon } from "./IHexagon";
 import { IRendererProps } from "./IRendererProps";
 
 export type IndicatorPropsFold = 'closed' | 'open-horizontal' | 'open-vertical';
@@ -17,24 +18,7 @@ export interface IIndicatorProps {
    */
   id: string;
 
-  name: string;
-
-  desc: string;
-
-  /**
-    * the state that the parent component passes to the indicator
-    */
-  fold: IndicatorPropsFold;
-
-  /**
-   * current value
-   */
-  label00: string;
-
-  /**
-   * callback to be triggered when an indicator wants to open horizontally
-   */
-  onExpand: (id: string) => void;
+  hexagon?: IHexagon;
 
   filePickerProps: IFilePickerProps;
 

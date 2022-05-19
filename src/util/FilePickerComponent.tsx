@@ -1,5 +1,5 @@
-import { Button } from "@mui/material";
-import { useEffect, useRef } from "react";
+import { Button, FormControlLabel, FormGroup, Switch } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
 import HexagonsComponent from "../components/HexagonsComponent";
 import { IFilePickerProps } from "../components/IFilePickerProps";
 import { HexagonRepository } from "../data/HexagonRepository";
@@ -10,6 +10,7 @@ export default (props: IFilePickerProps) => {
 
     let ws = useRef<WebSocket>();
 
+    const [connected, setConnected] = useState<boolean>(false);
     const { onHexagonUpdate } = props;
 
     useEffect(() => {
@@ -21,17 +22,20 @@ export default (props: IFilePickerProps) => {
         ws.current = new WebSocket("ws://192.168.0.94:8080/websocketpbf/hexagons/" + uid);
         ws.current.binaryType = "arraybuffer";
 
+        setConnected(true);
+
         ws.current.onclose = (e) => {
-            console.log('socket closed');
+            // console.log('socket closed');
+            setConnected(false);
         }
         ws.current.onmessage = function (event) {
 
             console.log('msg', event.data);
             const byteArray = new Uint8Array(event.data);
-            console.log('arr', byteArray);
+            console.log('arr');
             const pbfHexagonLoader = new PbfHexagonsLoader();
             pbfHexagonLoader.fromData(byteArray).then(pbfHexagons => {
-                console.log('hex', pbfHexagons, pbfHexagonLoader.time);
+                console.log('hex', pbfHexagonLoader.time);
                 HexagonRepository.getInstance().update(pbfHexagons);
                 onHexagonUpdate();
             });
@@ -39,14 +43,15 @@ export default (props: IFilePickerProps) => {
 
         };
         ws.current.onerror = (e) => {
-            console.error(e)
+            console.log('socket failure', e);
+            setConnected(false);
         };
 
     }, []);
 
     const send = (data: ArrayBuffer) => {
 
-        console.log('file send', data);
+        // console.log('file send', data);
         ws.current.send(data);
 
     }
@@ -83,19 +88,24 @@ export default (props: IFilePickerProps) => {
 
         <div style={{ display: 'flex', flexDirection: 'row', flexGrow: '999' }}>
 
-            <input
-                accept="application/x-protobuf, .pbf"
-                style={{ display: 'none' }}
-                id="raised-button-file"
-                multiple
-                type="file"
-                onChange={handleChange}
-            />
-            <label htmlFor="raised-button-file">
-                <Button component="span">
-                    Upload
-                </Button>
-            </label>
+            <FormGroup style={{ padding: '10px' }}>
+                <FormControlLabel disabled checked={connected} control={<Switch />} label="Connected" />
+            </FormGroup>
+            <FormGroup style={{ padding: '9px' }}>
+                <input
+                    accept="application/x-protobuf, .pbf"
+                    style={{ display: 'none' }}
+                    id="raised-button-file"
+                    multiple
+                    type="file"
+                    onChange={handleChange}
+                />
+                <label htmlFor="raised-button-file">
+                    <Button component="span" variant="outlined">
+                        Add Content
+                    </Button>
+                </label>
+            </FormGroup>
 
         </div>
 
