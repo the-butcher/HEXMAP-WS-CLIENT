@@ -1,0 +1,40 @@
+:root {
+  --color-background: #42423a;
+  --color-background-transparent: 'rgba(77, 77, 68, 0.85)';
+  --color-text: #c1c1aa;
+  --font-text: "Courier Prime Sans", Consolas, Courier-New, monospace;
+}
+
+@font-face {
+  font-family: "Courier Prime Sans";
+  src: url("Courier Prime Sans.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Courier Prime Sans";
+  src: url("Courier Prime Sans Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+.contextIcon {
+  color: #c1c1aa;
+  filter: drop-shadow(2px 2px 2px black);
+  padding: 8px;
+  opacity: 0.5;
+  transition: all 250ms ease-in-out;
+  font-size: 1.5em;
+}
+
+.contextIcon:hover {
+  opacity: 1;
+}
+
+input {
+  color: #c1c1aa;
+}
