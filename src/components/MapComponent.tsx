@@ -1,3 +1,4 @@
+import { Stats } from "@react-three/drei";
 import { Canvas, RootState } from "@react-three/fiber";
 import { PCFSoftShadowMap } from "three";
 import BoundariesComponent from "./BoundariesComponent";
@@ -25,7 +26,7 @@ export default (props: IMapProps) => {
     return (
         <div style={{ position: 'absolute', height: '100%', width: '100%' }}>
             <Canvas frameloop='demand' shadows={{ type: PCFSoftShadowMap, enabled: true }} onCreated={onCreated} camera={{ position: [0, 300, 0], fov: 40, far: 10000 }}>
-                {/* <fog attach="fog" args={["#42423a", 2000, 3000]} /> */}
+                {/* <fog attach="fog" args={["#42423a", 1000, 1500]} /> */}
                 <ControlsComponent key={controlsProps.id} {...controlsProps} />
                 {/* demand | always */}
                 {/* <Stats /> */}

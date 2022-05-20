@@ -12,7 +12,6 @@ import { ILightProps } from './ILightProps';
 export default (props: ILightProps) => {
 
     const pointLightSlow = useRef<three.DirectionalLight>();
-    const pointLightFast = useRef<three.DirectionalLight>();
     const { gl, scene } = useThree();
 
     const { stamp, intensity, shadowEnabled } = props;
@@ -42,11 +41,10 @@ export default (props: ILightProps) => {
 
         console.debug('✨ building light component', props);
 
-        configureLight(pointLightFast.current!, 32);
-        configureLight(pointLightSlow.current!, 4);
+        configureLight(pointLightSlow.current!, 2);
 
-        // const helper = new three.CameraHelper( pointLight.current!.shadow.camera );
-        // scene.add( helper );
+        // const helper = new three.CameraHelper(pointLightSlow.current!.shadow.camera);
+        // scene.add(helper);
 
     }, []);
 
@@ -54,14 +52,8 @@ export default (props: ILightProps) => {
 
         console.debug('⚙ updating light component', props);
 
-        pointLightSlow.current!.visible = shadowEnabled;
-        pointLightFast.current!.visible = !shadowEnabled;
-
-        pointLightSlow.current!.shadow.needsUpdate = shadowEnabled;
-        pointLightFast.current!.shadow.needsUpdate = !shadowEnabled;
-
-        pointLightSlow.current.intensity = intensity;
-        pointLightFast.current.intensity = intensity;
+        pointLightSlow.current!.shadow.needsUpdate = true;
+        pointLightSlow.current!.intensity = intensity;
 
 
     }, [stamp]);
@@ -69,7 +61,6 @@ export default (props: ILightProps) => {
     return (
         <>
             <directionalLight intensity={intensity} ref={pointLightSlow} castShadow />
-            <directionalLight intensity={intensity} ref={pointLightFast} castShadow />
         </>
     );
 
